@@ -18,6 +18,21 @@ the MariSmart contracts for thee cases is under /Verification, including a prope
 > 
 > 2. run the verification with command ./ bin-Darwin/verifyta [model file] [properties]
 
+## Verifier Usage
+
+- Prepare UPPAAL from https://uppaal.org/downloads/, and move libgcc_s.1.dylib, libstdc++.6.dylib and verifyta under /Verifier/uppaal
+- Start the Verifier by run `python3 /Verifier/PromptGenerator.py`
+- You can start with ./Verifier/test.sol, with properties provided in /properties
+- The Verifier will automatically convert Solidity file to UPPAAL model, and return the result.
+
+![type in source path](https://github.com/MariSmartSourceCode/MariSmart/blob/main/figures/1.png)
+
+![select properties to verify](https://github.com/MariSmartSourceCode/MariSmart/blob/main/figures/2.png)
+
+![return the results](https://github.com/MariSmartSourceCode/MariSmart/blob/main/figures/3.png)
+
+
+
 ## License
 
 This project is licensed under the MIT license.
