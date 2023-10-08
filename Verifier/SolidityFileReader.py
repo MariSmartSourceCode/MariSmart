@@ -58,8 +58,9 @@ class SolidityFileReader(object):
                             self.obj = parser.objectify(json_source)
                             self.json_list.append(json_source)
             if not flag:
-                raise Exception('no .sol file found in %s' %
-                                self.source_file_path)
+                pass
+                #raise Exception('no .sol file found in %s' %
+                                #self.source_file_path)
         # print(self.json_list)
 
         # json 分类存入列表
