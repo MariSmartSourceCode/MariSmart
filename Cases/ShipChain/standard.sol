@@ -1,0 +1,113 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+import "../../Templates/Stakeholders.sol";
+import "../../Templates/Shipment.sol";
+
+/* 
+The source code is fetched from https://github.com/ShipChain/smart-contracts/blob/master/truffle/contracts/Load/lib/Shipment.sol
+
+- shipper and carrier has the same role as in MariSmart contract. And moderator is replaced by the shpiment contract.
+- State.NOT_CREATED is start
+- State.CREATED is created
+- State.IN_PROGRESS is departed
+- State.COMPLETE is arrived
+- State.CANCELED is canceled
+
+*/
+
+contract FormattedShipment is Shipment {
+    constructor() payable {
+        shipper = msg.sender;
+        price = 0;
+        down_payment = 0;
+        transportation_fee = 0;
+        escrow_thresholds[shipper] = 0;
+        escrow_thresholds[consignee] = 0;
+        escrow_thresholds[carrier] = 0;
+        signatures[msg.sender] = true;
+        balances[msg.sender] += msg.value;
+    }
+
+    modifier pre_cancel() override {
+        require(state != State.closed, "Already canceled");
+        require(
+            state != State.created ||
+                msg.sender == shipper ||
+                msg.sender == carrier,
+            "Only shipper, carrier, or moderator can cancel an Created shipment"
+        );
+        require(
+            state != State.departed || msg.sender == carrier,
+            "Only carrier or moderator can cancel an In Progress shipment"
+        );
+        require(state != State.arrived);
+        _;
+    }
+}
+
+contract FormattedShipper is Shipper {
+    /* custom variable here */
+    event ShipmentCanceled(
+        address indexed msgSender,
+        uint indexed shipmentUuid
+    );
+    mapping(address => uint) public passcode_hashes;
+
+    function close(uint _UID) public virtual override onlyOwner {
+        /* custom logic here */
+        FormattedShipment(shipments[_UID]).close();
+    }
+
+    function cancel(uint _UID) public override onlyOwner {
+        FormattedShipment(shipments[_UID]).cancel();
+        emit ShipmentCanceled(msg.sender, _UID);
+    }
+
+    /* custom function here */
+    function create(
+        uint _escrow_amount
+    ) public override onlyOwner returns (uint) {
+        FormattedShipment shipment = new FormattedShipment{
+            value: _escrow_amount
+        }();
+        /* custom logic here */
+        uid_counter += 1;
+        shipments[uid_counter] = address(shipment);
+        return uid_counter;
+    }
+}
+
+contract FormattedCarrier is Carrier {
+    event ShipmentInProgress(
+        address indexed msgSender,
+        uint indexed shipmentUuid
+    );
+    event ShipmentComplete(
+        address indexed msgSender,
+        uint indexed shipmentUuid
+    );
+    event ShipmentCanceled(
+        address indexed msgSender,
+        uint indexed shipmentUuid
+    );
+
+    function close(uint _UID) public virtual override onlyOwner {
+        /* custom logic here */
+        FormattedShipment(shipments[_UID]).close();
+    }
+
+    function depart(uint _UID) public override onlyOwner {
+        FormattedShipment(shipments[_UID]).depart();
+        emit ShipmentInProgress(msg.sender, _UID);
+    }
+
+    function arrive(uint _UID) public override onlyOwner {
+        FormattedShipment(shipments[_UID]).arrive();
+        emit ShipmentComplete(msg.sender, _UID);
+    }
+
+    function cancel(uint _UID) public onlyOwner {
+        FormattedShipment(shipments[_UID]).cancel();
+        emit ShipmentCanceled(msg.sender, _UID);
+    }
+}

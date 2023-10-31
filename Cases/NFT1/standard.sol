@@ -1,0 +1,302 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+import "../../Templates/Shipment.sol";
+import "../../Templates/Stakeholders.sol";
+
+/* 
+The source code is fetched from https://github.com/fairouzK/Container-NFT/blob/main/containerNFT.sol
+
+The transportation of the NFT container is refactored as MariSmart contracts, where
+
+- shipper is the shipper
+- receiver is the consignee
+- According to the definition in the paper (K.Elmay, 2022), an agent represents a shipping line, or a container shipping company. Therefore, agent and specific transporter is the carrier.
+
+- ShipmentState is the state in Shipment contract, where
+- Requested is created
+- ContainerIdAssigned and NFTMinted represent the state when the shipper and carrier confirm the shipment, so they are represented by signed
+- The state BoLIssued and Departed are reached successively in the same function issueBoL. From user's perspective, the state is updated to BoLIssued and turns to Departed immediately. Therefore we represent them as departed.
+- Notebaly, arrived is not directly defined in the original contract. Instead, the state is updated directly from Departed to Claimed in claimCargo, where consignee tries to receive the shipment. We represent the Claimed and DestinationReached as received.
+- Auctioned and AuctionApproved are rearranged
+- The shipment is closed when NFT is burnt
+
+- requestShipment is create
+- approveShipmentRequest and createNFT are sign
+- issueBoL is depart
+- claimCargo and shipmentDelivered are receive
+- auctionCargo and auctionApproval are rearrange
+- burnContainerNFT is close
+
+
+- Payment is not implemented in this system. It is considered to be done offline and the BoL is stored, so the transportation_fee, down_payment and price is set to 0
+
+- The original contract implements the reselling, but no receive valid period is assigned. The function claimCargo and auctionCargo are competing.
+
+Several kinds of id are used in the contract, where
+- shipmentId is the id of the shipment, which is replaced by UID in MariSmart
+- containerID is assigned when requestapproved, which is replaced by container_id in shipment contract and accessed by getter and setter
+- nftId is the id of the NFT, which is minted at creation, and accessed by getter and setter
+
+*/
+
+contract FormattedShipment is Shipment {
+    string container_id;
+    uint nft_id;
+    string bol_link;
+
+    function setBolLink(string memory _bol_link) public onlyStakeholder {
+        bol_link = _bol_link;
+    }
+
+    function getBolLink() public view onlyStakeholder returns (string memory) {
+        return bol_link;
+    }
+
+    function setContainerId(
+        string memory _container_id
+    ) public onlyStakeholder {
+        container_id = _container_id;
+    }
+
+    function getContainerId()
+        public
+        view
+        onlyStakeholder
+        returns (string memory)
+    {
+        return container_id;
+    }
+
+    function getNftId() public view onlyStakeholder returns (uint) {
+        return nft_id;
+    }
+
+    function setNftId(uint _nft_id) public onlyStakeholder {
+        nft_id = _nft_id;
+    }
+
+    constructor() payable {
+        down_payment = price;
+        receive_valid = 2 days;
+        compensation_valid = 2 days;
+        escrow_thresholds[shipper] = 0;
+        escrow_thresholds[consignee] = 0;
+        escrow_thresholds[carrier] = 0;
+        signatures[msg.sender] = true;
+        balances[msg.sender] += msg.value;
+    }
+
+    function sign() external payable override pre_sign {
+        // only delete requirement for pre-shipment-inspector
+        signatures[msg.sender] = true;
+        emit StakeholderSign(msg.sender, block.timestamp);
+        if (
+            signatures[shipper] == true &&
+            signatures[carrier] == true &&
+            signatures[consignee] == true
+        ) {
+            state = State.signed;
+            emit ShipmentSigned(msg.sender, block.timestamp);
+        }
+    }
+
+    modifier pre_close() override {
+        require(
+            state == State.received ||
+                state == State.rearranged ||
+                (state == State.created &&
+                    block.timestamp > create_time + sign_valid)
+        );
+        _;
+    }
+    modifier pre_depart() override {
+        require(state == State.signed);
+        _;
+    }
+    modifier pre_importShipment() override {
+        require(false, "deprecated");
+        _;
+    }
+    modifier pre_receiveShipment() override {
+        require(state == State.departed);
+        _;
+    }
+    modifier pre_inspect() override {
+        require(false, "deprecated");
+        _;
+    }
+    modifier pre_exportShipment() override {
+        require(false, "deprecated");
+        _;
+    }
+    modifier pre_rearrange() override {
+        require(state != State.received);
+        _;
+    }
+    modifier pre_reportLoss() override {
+        require(false, "deprecated");
+        _;
+    }
+    modifier pre_reportDamage() override {
+        require(false, "deprecated");
+        _;
+    }
+    modifier pre_claim() override {
+        require(false, "deprecated");
+        _;
+    }
+    modifier pre_compensate() override {
+        require(false, "deprecated");
+        _;
+    }
+}
+
+contract FormattedShipper is Shipper {
+    event ShipmentRequested(
+        uint256 requestId,
+        address requester,
+        string destination
+    );
+
+    /* custom variable here */
+    function create(
+        uint _escrow_amount,
+        string memory s_destination,
+        uint _nft_id
+    ) public onlyOwner returns (uint) {
+        // from requestShipment
+        FormattedShipment shipment = new FormattedShipment{
+            value: _escrow_amount
+        }();
+        shipment.setContainerId(s_destination);
+        shipment.setNftId(_nft_id);
+        uid_counter += 1;
+        shipments[uid_counter] = address(shipment);
+        emit ShipmentRequested(uid_counter, msg.sender, s_destination);
+        return uid_counter;
+    }
+
+    function withdraw(uint _UID) public override onlyOwner {
+        FormattedShipment(shipments[_UID]).withdraw();
+    }
+
+    function close(uint _UID) public virtual override onlyOwner {
+        /* custom logic here */
+        FormattedShipment(shipments[_UID]).close();
+    }
+    /* custom function here */
+}
+
+contract FormattedCarrier is Carrier {
+    event BoLIssuedAndStored(address _shipper, uint256 requestId, string _bol);
+    event ShipmentApprovedAndContainerIDAssigned(
+        address a,
+        uint256 id,
+        string containerId
+    );
+    event CargoAuctionRequested(
+        address receiver,
+        address sender,
+        uint256 shipmentId,
+        uint256 tokenId
+    );
+    event AuctionApprovedAndNFTTransferredToAuctionSC(uint256 tokenId);
+    event ContainerNFTBurnt(address burner, uint256 tokenId);
+
+    function sign(
+        address _shipment,
+        string memory containerid
+    ) public onlyOwner returns (uint) {
+        uint escrow_amount = FormattedShipment(_shipment).getEscrowThresholds(
+            address(this)
+        );
+        FormattedShipment(_shipment).sign{value: escrow_amount}();
+        uid_counter += 1;
+        shipments[uid_counter] = _shipment;
+
+        FormattedShipment(_shipment).setContainerId(containerid);
+        emit ShipmentApprovedAndContainerIDAssigned(
+            FormattedShipment(_shipment).getShipper(),
+            uid_counter,
+            containerid
+        );
+        return uid_counter;
+    }
+
+    function withdraw(uint _UID) public override onlyOwner {
+        FormattedShipment(shipments[_UID]).withdraw();
+    }
+
+    function depart(uint _UID, string memory bol) public virtual onlyOwner {
+        /* custom logic here */
+
+        uint256 tokenId = FormattedShipment(shipments[_UID]).getNftId();
+
+        FormattedShipment(shipments[_UID]).setBolLink(bol); // can be set through js or json
+        emit BoLIssuedAndStored(
+            FormattedShipment(shipments[_UID]).getShipper(),
+            _UID,
+            bol
+        );
+        FormattedShipment(shipments[_UID]).depart();
+    }
+
+    function close(uint _UID) public virtual override onlyOwner {
+        /* custom logic here */
+        uint256 tokenId = FormattedShipment(shipments[_UID]).getNftId();
+        emit ContainerNFTBurnt(msg.sender, tokenId);
+        FormattedShipment(shipments[_UID]).close();
+    }
+
+    function rearrange(uint _UID) public override onlyOwner {
+        uint256 tokenId = FormattedShipment(shipments[_UID]).getNftId();
+
+        emit CargoAuctionRequested(
+            msg.sender,
+            FormattedShipment(shipments[_UID]).getShipper(),
+            _UID,
+            tokenId
+        );
+        FormattedShipment(shipments[_UID]).rearrange();
+        emit AuctionApprovedAndNFTTransferredToAuctionSC(tokenId);
+    }
+}
+
+contract FormattedConsignee is Consignee {
+    event CargoClaimRequested(
+        address receiver,
+        address sender,
+        uint256 shipmentId,
+        string metadataLink
+    );
+    event shipmentDeliveredSuccessfully(address sender, uint256 shipmentId);
+
+    function sign(address _shipment) public override onlyOwner returns (uint) {
+        uint escrow_amount = FormattedShipment(_shipment).getEscrowThresholds(
+            address(this)
+        );
+        FormattedShipment(_shipment).sign{value: escrow_amount}();
+        uid_counter += 1;
+        shipments[uid_counter] = _shipment;
+        return uid_counter;
+    }
+
+    function receiveShipment(
+        uint _UID,
+        bool _is_passed,
+        string memory bolLink
+    ) public virtual onlyOwner {
+        /* custom logic here */
+        emit CargoClaimRequested(
+            msg.sender,
+            FormattedShipment(shipments[_UID]).getShipper(),
+            _UID,
+            bolLink
+        );
+        emit shipmentDeliveredSuccessfully(
+            FormattedShipment(shipments[_UID]).getShipper(),
+            _UID
+        );
+        FormattedShipment(shipments[_UID]).receiveShipment(_is_passed);
+    }
+}

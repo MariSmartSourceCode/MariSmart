@@ -1,0 +1,221 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+import "../../Templates/Stakeholders.sol";
+import "../../Templates/Shipment.sol";
+
+/* 
+The source code is fetched from https://github.com/AhmadKhalifaUniversity/Code/blob/main/Registration
+
+The transportation of the waste from hospital from treatment facility is refactored as MariSmart contracts, where
+
+- hospital is the shipper
+- shipper is the carrier
+- treatment facility is the receiver
+
+- PlaceShipmentRequest is create, where require statement is added to pre_create
+- ConfirmShipmentRequest is sign
+- UpdateShipmentStatus is split into depart, arrive
+- ConfirmShipmentReceiving is receive
+
+- orders is shipments in Stakeholder contracts
+- shipID is the UID in Stakeholder contracts
+- statusOrder is the state in Shipment contract, and pending is created, accepted is signed, rejected is closed, shipping is departed, reached is arrived, received is received
+
+- No payment is required in this case, so the transportation_fee, down_payment and price is set to 0
+- The escrow is set to 0
+*/
+
+contract FormattedShipment is Shipment {
+    uint rd;
+    bool status_flag;
+    uint difference;
+
+    function getRd() external view onlyStakeholder returns (uint) {
+        return rd;
+    }
+
+    function setRd(uint _rd) external onlyStakeholder {
+        rd = _rd;
+    }
+
+    function getStatusFlag() external view onlyStakeholder returns (bool) {
+        return status_flag;
+    }
+
+    function setStatusFlag(bool _status_flag) external onlyStakeholder {
+        status_flag = _status_flag;
+    }
+
+    function getDifferece() external view onlyStakeholder returns (uint) {
+        return difference;
+    }
+
+    function setDifference(uint _difference) external onlyStakeholder {
+        difference = _difference;
+    }
+
+    function getState() external view onlyStakeholder returns (State) {
+        return state;
+    }
+
+    constructor() payable {
+        shipper = msg.sender;
+        price = 0;
+        down_payment = 0;
+        transportation_fee = 0;
+        escrow_thresholds[shipper] = 0;
+        escrow_thresholds[consignee] = 0;
+        escrow_thresholds[carrier] = 0;
+        signatures[msg.sender] = true;
+        balances[msg.sender] += msg.value;
+    }
+
+    function sign() external payable virtual override pre_sign {
+        signatures[msg.sender] = true;
+        balances[msg.sender] += msg.value;
+        emit StakeholderSign(msg.sender, block.timestamp);
+        if (
+            signatures[shipper] == true &&
+            signatures[carrier] == true &&
+            signatures[consignee] == true
+        ) {
+            state = State.signed;
+            emit ShipmentSigned(msg.sender, block.timestamp);
+        }
+    }
+
+    modifier pre_depart() override {
+        require(
+            state != State.closed,
+            "Action cannot be granted since the shipment request is rejected by the shipper! ."
+        );
+        _;
+    }
+    modifier pre_arrive() override {
+        require(
+            state != State.closed,
+            "Action cannot be granted since the shipment request is rejected by the shipper! ."
+        );
+        _;
+    }
+    modifier pre_receiveShipment() override {
+        require(
+            state == State.arrived,
+            "The Shipment carrying COVID-19 waste has not reached yet"
+        );
+        _;
+    }
+}
+
+contract FormattedShipper is Shipper {
+    /* custom variable here */
+
+    mapping(address => uint) public passcode_hashes;
+    event ShippingRequestPlaced(uint ShipmentID, address WasteGeneratorEA);
+
+    function close(uint _UID) public virtual override onlyOwner {
+        /* custom logic here */
+        FormattedShipment(shipments[_UID]).close();
+    }
+
+    /* custom function here */
+    function create(
+        uint _escrow_amount
+    ) public override onlyOwner returns (uint) {
+        FormattedShipment shipment = new FormattedShipment{
+            value: _escrow_amount
+        }();
+        /* custom logic here */
+        shipment.setStatusFlag(false);
+        uid_counter += 1;
+        shipment.setRd(uid_counter);
+        emit ShippingRequestPlaced(uid_counter, msg.sender);
+        shipments[uid_counter] = address(shipment);
+        return uid_counter;
+    }
+}
+
+contract FormattedCarrier is Carrier {
+    event ShipmentRequestStatusUpdated(uint UID, Shipment.State state);
+    event ShipmentStateandlocationUpdated(
+        uint UID,
+        Shipment.State state,
+        uint Time
+    );
+
+    function close(uint _UID) public virtual override onlyOwner {
+        /* custom logic here */
+        FormattedShipment(shipments[_UID]).close();
+    }
+
+    function sign(address _shipment, uint _UID, bool Accept) public onlyOwner {
+        uint escrow_amount = FormattedShipment(_shipment).getEscrowThresholds(
+            address(this)
+        );
+        uid_counter += 1;
+        shipments[uid_counter] = _shipment;
+        if (Accept) {
+            FormattedShipment(shipments[_UID]).sign{value: escrow_amount}();
+        } else {
+            FormattedShipment(shipments[_UID]).close();
+        }
+        FormattedShipment(_shipment).setStatusFlag(true);
+        emit ShipmentRequestStatusUpdated(
+            _UID,
+            FormattedShipment(_shipment).getState()
+        );
+    }
+
+    function depart(uint _UID, bool Reacheddestination) public onlyOwner {
+        if (
+            FormattedShipment(shipments[_UID]).getStatusFlag() == true &&
+            Reacheddestination == false
+        ) {
+            FormattedShipment(shipments[_UID]).depart();
+        }
+        emit ShipmentStateandlocationUpdated(
+            _UID,
+            FormattedShipment(shipments[_UID]).getState(),
+            block.timestamp
+        );
+    }
+
+    function arrive(uint _UID, bool Reacheddestination) public onlyOwner {
+        if (
+            FormattedShipment(shipments[_UID]).getStatusFlag() == true &&
+            Reacheddestination == true
+        ) {
+            FormattedShipment(shipments[_UID]).arrive();
+        }
+        emit ShipmentStateandlocationUpdated(
+            _UID,
+            FormattedShipment(shipments[_UID]).getState(),
+            block.timestamp
+        );
+    }
+}
+
+contract FormattedConsignee is Consignee {
+    /* custom function here */
+    event WasteReceived(uint UID, uint Time);
+
+    function sign(
+        address _shipment
+    ) public virtual override onlyOwner returns (uint) {
+        uint escrow_amount = FormattedShipment(_shipment).getEscrowThresholds(
+            address(this)
+        );
+        FormattedShipment(_shipment).sign{value: escrow_amount}();
+        uid_counter += 1;
+        shipments[uid_counter] = _shipment;
+        return uid_counter;
+    }
+
+    function receiveShipment(uint _UID, uint Weight_new) public onlyOwner {
+        FormattedShipment(shipments[_UID]).receiveShipment(true);
+        FormattedShipment(shipments[_UID]).setDifference(
+            Weight_new - FormattedShipment(shipments[_UID]).getWeight()
+        );
+        emit WasteReceived(_UID, block.timestamp);
+    }
+}
