@@ -1,0 +1,5 @@
+antlr4-python3-runtime==4.9.3
+prompt-toolkit==3.0.39
+solidity-parser==0.1.1
+tabulate==0.9.0
+wcwidth==0.2.9
