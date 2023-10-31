@@ -1,1 +1,0 @@
-/opt/homebrew/bin/python3 /Users/zhaoxufeng/codes/MariSmart/Verifier/UppaalFileGenerator.py
