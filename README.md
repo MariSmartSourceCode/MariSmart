@@ -45,7 +45,7 @@ options:
 
 ## Webserver
 
-We provide a web app at http://124.16.137.30 for demo.
+We provide a web app at 124.16.137.30:50002 for demo.
 
 ![type in source path](https://github.com/MariSmartSourceCode/MariSmart/blob/main/figures/1.png)
 
