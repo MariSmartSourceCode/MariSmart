@@ -2,8 +2,9 @@
 
 a development and verification framework for maritime transportation smart contracts 
 
-** goto 124.16.137.30:50002 for demo, where passcode is attached in the report! **
-** 请从 124.16.137.30:50002 访问示例，Chinasoft 工具报告内提供用户名密码！**
+**goto 124.16.137.30:50002 for demo, where passcode is attached in the report!**
+
+**请从 124.16.137.30:50002 访问示例，Chinasoft 工具报告内提供用户名密码！**
 
 ## Development
 
