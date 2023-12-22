@@ -1,0 +1,4 @@
+    function reportLoss(uint _UID) public override onlyOwner {
+        /* custom logic here */
+        MyShipment(shipments[_UID]).reportLoss();
+    }

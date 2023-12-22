@@ -218,6 +218,12 @@ bool shipment_externalTransfer(int to, int amount){
 		<location id="id6" x="-340" y="-136">
 			<name x="-331" y="-127">start</name>
 		</location>
+		<location id="id7" x="102" y="-136">
+			<name x="92" y="-170">lost</name>
+		</location>
+		<location id="id8" x="170" y="-136">
+			<name x="160" y="-170">claimed</name>
+		</location>
 		<init ref="id6"/>
 		<transition>
 			<source ref="id4"/>
@@ -318,48 +324,48 @@ call_close = true;  shipment_close ();
 }
 
 </declaration>
-		<location id="id7" x="400" y="0">
+		<location id="id9" x="400" y="0">
 			<name x="390" y="-30">create_called</name>
 			<committed/>
 		</location>
-		<location id="id8" x="400" y="70">
+		<location id="id10" x="400" y="70">
 			<name x="390" y="40">close_called</name>
 			<committed/>
 		</location>
-		<location id="id9" x="400" y="140">
+		<location id="id11" x="400" y="140">
 			<name x="390" y="110">withdraw_called</name>
 			<committed/>
 		</location>
-		<location id="id10" x="400" y="210">
+		<location id="id12" x="400" y="210">
 			<name x="390" y="180">cancel_called</name>
 			<committed/>
 		</location>
-		<location id="id11" x="400" y="280">
+		<location id="id13" x="400" y="280">
 			<name x="390" y="250">claim_called</name>
 			<committed/>
 		</location>
-		<location id="id12" x="0" y="0">
+		<location id="id14" x="0" y="0">
 			<name x="20" y="0">idle</name>
 			<label kind="invariant" x="20" y="10">waitCLK&lt;WAITMAX</label>
 		</location>
-		<init ref="id12"/>
+		<init ref="id14"/>
 		<transition>
-			<source ref="id12"/>
-			<target ref="id7"/>
+			<source ref="id14"/>
+			<target ref="id9"/>
 			<label kind="guard" x="40" y="-42">status==0 &amp;&amp; signatures[shipper] == false</label>
 			<label kind="assignment" x="40" y="-21">create_timeCLK = 0, msg_sender = shipper, create_ret = create()</label>
 			<nail x="0" y="0"/>
 		</transition>
 		<transition>
-			<source ref="id12"/>
-			<target ref="id8"/>
+			<source ref="id14"/>
+			<target ref="id10"/>
 			<label kind="guard" x="40" y="28">status==status_created &amp;&amp; create_timeCLK &gt; sign_valid</label>
 			<label kind="assignment" x="40" y="49">msg_sender = shipper, close()</label>
 			<nail x="0" y="70"/>
 		</transition>
 		<transition>
-			<source ref="id7"/>
-			<target ref="id12"/>
+			<source ref="id9"/>
+			<target ref="id14"/>
 			<label kind="guard" x="440" y="-21">call_create</label>
 			<label kind="synchronisation" x="440" y="-63">chan_create!</label>
 			<label kind="assignment" x="440" y="-42">waitCLK=0,call_create=false</label>
@@ -368,8 +374,8 @@ call_close = true;  shipment_close ();
 			<nail x="0" y="-70"/>
 		</transition>
 		<transition>
-			<source ref="id7"/>
-			<target ref="id12"/>
+			<source ref="id9"/>
+			<target ref="id14"/>
 			<label kind="guard" x="440" y="-21">no_transition()</label>
 			<label kind="assignment" x="440" y="-42">waitCLK=0</label>
 			<nail x="600" y="0"/>
@@ -377,8 +383,8 @@ call_close = true;  shipment_close ();
 			<nail x="0" y="-70"/>
 		</transition>
 		<transition>
-			<source ref="id8"/>
-			<target ref="id12"/>
+			<source ref="id10"/>
+			<target ref="id14"/>
 			<label kind="guard" x="442" y="51">call_close</label>
 			<label kind="synchronisation" x="440" y="7">chan_close!</label>
 			<label kind="assignment" x="440" y="28">waitCLK=0,call_close=false</label>
@@ -387,8 +393,8 @@ call_close = true;  shipment_close ();
 			<nail x="0" y="-70"/>
 		</transition>
 		<transition>
-			<source ref="id8"/>
-			<target ref="id12"/>
+			<source ref="id10"/>
+			<target ref="id14"/>
 			<label kind="guard" x="440" y="49">no_transition()</label>
 			<label kind="assignment" x="440" y="28">waitCLK=0</label>
 			<nail x="600" y="70"/>
@@ -442,103 +448,103 @@ shipment_compensate();
 }
 
 </declaration>
-		<location id="id13" x="400" y="0">
+		<location id="id15" x="400" y="0">
 			<name x="390" y="-30">sign_called</name>
 			<committed/>
 		</location>
-		<location id="id14" x="400" y="70">
+		<location id="id16" x="400" y="70">
 			<name x="390" y="40">close_called</name>
 			<committed/>
 		</location>
-		<location id="id15" x="400" y="140">
+		<location id="id17" x="400" y="140">
 			<name x="390" y="110">depart_called</name>
 			<committed/>
 		</location>
-		<location id="id16" x="400" y="210">
+		<location id="id18" x="400" y="210">
 			<name x="390" y="180">arrive_called</name>
 			<committed/>
 		</location>
-		<location id="id17" x="400" y="280">
+		<location id="id19" x="400" y="280">
 			<name x="390" y="250">withdraw_called</name>
 			<committed/>
 		</location>
-		<location id="id18" x="400" y="350">
+		<location id="id20" x="400" y="350">
 			<name x="390" y="320">reportLoss_called</name>
 			<committed/>
 		</location>
-		<location id="id19" x="400" y="420">
+		<location id="id21" x="400" y="420">
 			<name x="390" y="390">reportDamage_called</name>
 			<committed/>
 		</location>
-		<location id="id20" x="400" y="490">
+		<location id="id22" x="400" y="490">
 			<name x="390" y="460">rearrange_called</name>
 			<committed/>
 		</location>
-		<location id="id21" x="400" y="560">
+		<location id="id23" x="400" y="560">
 			<name x="390" y="530">compensate_called</name>
 			<committed/>
 		</location>
-		<location id="id22" x="0" y="0">
+		<location id="id24" x="0" y="0">
 			<name x="20" y="0">idle</name>
 			<label kind="invariant" x="20" y="10">waitCLK&lt;WAITMAX</label>
 		</location>
-		<init ref="id22"/>
+		<init ref="id24"/>
 		<transition>
-			<source ref="id22"/>
-			<target ref="id13"/>
+			<source ref="id24"/>
+			<target ref="id15"/>
 			<label kind="select" x="40" y="-63">Accept:int[0,1]</label>
 			<label kind="guard" x="40" y="-42">status==status_created &amp;&amp; signatures[carrier] == false</label>
 			<label kind="assignment" x="40" y="-21">msg_sender = carrier, sign(Accept)</label>
 			<nail x="0" y="0"/>
 		</transition>
 		<transition>
-			<source ref="id22"/>
-			<target ref="id14"/>
+			<source ref="id24"/>
+			<target ref="id16"/>
 			<label kind="guard" x="40" y="28">(block_timestamp &gt; arrive_date + compensation_valid &amp;&amp; status == status_lost)</label>
 			<label kind="assignment" x="40" y="49">msg_sender = carrier, close()</label>
 			<nail x="0" y="70"/>
 		</transition>
 		<transition>
-			<source ref="id22"/>
-			<target ref="id14"/>
+			<source ref="id24"/>
+			<target ref="id16"/>
 			<label kind="guard" x="40" y="28">(receive_timeCLK &gt; compensation_valid &amp;&amp; status == status_received)</label>
 			<label kind="assignment" x="40" y="49">msg_sender = carrier, close()</label>
 			<nail x="0" y="70"/>
 		</transition>
 		<transition>
-			<source ref="id22"/>
-			<target ref="id14"/>
+			<source ref="id24"/>
+			<target ref="id16"/>
 			<label kind="guard" x="40" y="28">status == status_rearranged</label>
 			<label kind="assignment" x="40" y="49">msg_sender = carrier, close()</label>
 			<nail x="0" y="70"/>
 		</transition>
 		<transition>
-			<source ref="id22"/>
-			<target ref="id15"/>
+			<source ref="id24"/>
+			<target ref="id17"/>
 			<label kind="select" x="40" y="77">Reacheddestination:int[0,1]</label>
 			<label kind="guard" x="40" y="98">status!=status_closed</label>
 			<label kind="assignment" x="40" y="119">depart_timeCLK = 0, msg_sender = carrier, depart(Reacheddestination)</label>
 			<nail x="0" y="140"/>
 		</transition>
 		<transition>
-			<source ref="id22"/>
-			<target ref="id16"/>
+			<source ref="id24"/>
+			<target ref="id18"/>
 			<label kind="select" x="40" y="147">Reacheddestination:int[0,1]</label>
 			<label kind="guard" x="40" y="168">status!=status_closed&amp;&amp; block_timestamp&lt;=arrive_date</label>
 			<label kind="assignment" x="40" y="189">TIMED_CONDITION_0 = false, arrive_timeCLK = 0, msg_sender = carrier, arrive(Reacheddestination)</label>
 			<nail x="0" y="210"/>
 		</transition>
 		<transition>
-			<source ref="id22"/>
-			<target ref="id16"/>
+			<source ref="id24"/>
+			<target ref="id18"/>
 			<label kind="select" x="40" y="147">Reacheddestination:int[0,1]</label>
 			<label kind="guard" x="40" y="168">status!=status_closed&amp;&amp; block_timestamp&gt;arrive_date</label>
 			<label kind="assignment" x="40" y="189">TIMED_CONDITION_0 = true, arrive_timeCLK = 0, msg_sender = carrier, arrive(Reacheddestination)</label>
 			<nail x="0" y="210"/>
 		</transition>
 		<transition>
-			<source ref="id13"/>
-			<target ref="id22"/>
+			<source ref="id15"/>
+			<target ref="id24"/>
 			<label kind="guard" x="440" y="-21">call_sign</label>
 			<label kind="synchronisation" x="440" y="-63">chan_sign!</label>
 			<label kind="assignment" x="440" y="-42">waitCLK=0,call_sign=false</label>
@@ -547,8 +553,8 @@ shipment_compensate();
 			<nail x="0" y="-70"/>
 		</transition>
 		<transition>
-			<source ref="id13"/>
-			<target ref="id22"/>
+			<source ref="id15"/>
+			<target ref="id24"/>
 			<label kind="guard" x="440" y="-21">call_close</label>
 			<label kind="synchronisation" x="440" y="-63">chan_close!</label>
 			<label kind="assignment" x="440" y="-42">waitCLK=0,call_close=false</label>
@@ -557,8 +563,8 @@ shipment_compensate();
 			<nail x="0" y="-70"/>
 		</transition>
 		<transition>
-			<source ref="id13"/>
-			<target ref="id22"/>
+			<source ref="id15"/>
+			<target ref="id24"/>
 			<label kind="guard" x="440" y="-21">no_transition()</label>
 			<label kind="assignment" x="440" y="-42">waitCLK=0</label>
 			<nail x="600" y="0"/>
@@ -566,8 +572,8 @@ shipment_compensate();
 			<nail x="0" y="-70"/>
 		</transition>
 		<transition>
-			<source ref="id14"/>
-			<target ref="id22"/>
+			<source ref="id16"/>
+			<target ref="id24"/>
 			<label kind="guard" x="440" y="49">call_close</label>
 			<label kind="synchronisation" x="440" y="7">chan_close!</label>
 			<label kind="assignment" x="440" y="28">waitCLK=0,call_close=false</label>
@@ -576,8 +582,8 @@ shipment_compensate();
 			<nail x="0" y="-70"/>
 		</transition>
 		<transition>
-			<source ref="id14"/>
-			<target ref="id22"/>
+			<source ref="id16"/>
+			<target ref="id24"/>
 			<label kind="guard" x="440" y="49">no_transition()</label>
 			<label kind="assignment" x="440" y="28">waitCLK=0</label>
 			<nail x="600" y="70"/>
@@ -585,8 +591,8 @@ shipment_compensate();
 			<nail x="0" y="-70"/>
 		</transition>
 		<transition>
-			<source ref="id15"/>
-			<target ref="id22"/>
+			<source ref="id17"/>
+			<target ref="id24"/>
 			<label kind="guard" x="440" y="119">call_depart</label>
 			<label kind="synchronisation" x="440" y="77">chan_depart!</label>
 			<label kind="assignment" x="440" y="98">waitCLK=0,call_depart=false</label>
@@ -595,8 +601,8 @@ shipment_compensate();
 			<nail x="0" y="-70"/>
 		</transition>
 		<transition>
-			<source ref="id15"/>
-			<target ref="id22"/>
+			<source ref="id17"/>
+			<target ref="id24"/>
 			<label kind="guard" x="440" y="119">no_transition()</label>
 			<label kind="assignment" x="440" y="98">waitCLK=0</label>
 			<nail x="600" y="140"/>
@@ -604,8 +610,8 @@ shipment_compensate();
 			<nail x="0" y="-70"/>
 		</transition>
 		<transition>
-			<source ref="id16"/>
-			<target ref="id22"/>
+			<source ref="id18"/>
+			<target ref="id24"/>
 			<label kind="guard" x="440" y="189">call_arrive</label>
 			<label kind="synchronisation" x="440" y="147">chan_arrive!</label>
 			<label kind="assignment" x="440" y="168">waitCLK=0,call_arrive=false</label>
@@ -614,8 +620,8 @@ shipment_compensate();
 			<nail x="0" y="-70"/>
 		</transition>
 		<transition>
-			<source ref="id16"/>
-			<target ref="id22"/>
+			<source ref="id18"/>
+			<target ref="id24"/>
 			<label kind="guard" x="440" y="189">no_transition()</label>
 			<label kind="assignment" x="440" y="168">waitCLK=0</label>
 			<nail x="600" y="210"/>
@@ -647,45 +653,45 @@ shipment_claim(_compensation_amount);
 }
 
 		</declaration>
-		<location id="id23" x="400" y="0">
+		<location id="id25" x="400" y="0">
 			<name x="390" y="-30">sign_called</name>
 			<committed/>
 		</location>
-		<location id="id24" x="400" y="70">
+		<location id="id26" x="400" y="70">
 			<name x="390" y="40">receiveShipment_called</name>
 			<committed/>
 		</location>
-		<location id="id25" x="400" y="140">
+		<location id="id27" x="400" y="140">
 			<name x="390" y="110">withdraw_called</name>
 			<committed/>
 		</location>
-		<location id="id26" x="400" y="210">
+		<location id="id28" x="400" y="210">
 			<name x="390" y="180">claim_called</name>
 			<committed/>
 		</location>
-		<location id="id27" x="0" y="0">
+		<location id="id29" x="0" y="0">
 			<name x="20" y="0">idle</name>
 			<label kind="invariant" x="20" y="10">waitCLK&lt;WAITMAX</label>
 		</location>
-		<init ref="id27"/>
+		<init ref="id29"/>
 		<transition>
-			<source ref="id27"/>
-			<target ref="id23"/>
+			<source ref="id29"/>
+			<target ref="id25"/>
 			<label kind="guard" x="40" y="-42">status==status_created &amp;&amp; signatures[consignee] == false</label>
 			<label kind="assignment" x="40" y="-21">msg_sender = consignee, sign_ret = sign()</label>
 			<nail x="0" y="0"/>
 		</transition>
 		<transition>
-			<source ref="id27"/>
-			<target ref="id24"/>
+			<source ref="id29"/>
+			<target ref="id26"/>
 			<label kind="select" x="40" y="7">Weight_new:int[0,30]</label>
 			<label kind="guard" x="40" y="28">status==status_imported &amp;&amp; arrive_timeCLK&lt;=receive_valid</label>
 			<label kind="assignment" x="40" y="49">receive_timeCLK = 0, msg_sender = consignee, receiveShipment(Weight_new)</label>
 			<nail x="0" y="70"/>
 		</transition>
 		<transition>
-			<source ref="id23"/>
-			<target ref="id27"/>
+			<source ref="id25"/>
+			<target ref="id29"/>
 			<label kind="guard" x="440" y="-21">call_sign</label>
 			<label kind="synchronisation" x="440" y="-63">chan_sign!</label>
 			<label kind="assignment" x="440" y="-42">waitCLK=0,call_sign=false</label>
@@ -694,8 +700,8 @@ shipment_claim(_compensation_amount);
 			<nail x="0" y="-70"/>
 		</transition>
 		<transition>
-			<source ref="id23"/>
-			<target ref="id27"/>
+			<source ref="id25"/>
+			<target ref="id29"/>
 			<label kind="guard" x="440" y="-21">no_transition()</label>
 			<label kind="assignment" x="440" y="-42">waitCLK=0</label>
 			<nail x="600" y="0"/>
@@ -703,8 +709,8 @@ shipment_claim(_compensation_amount);
 			<nail x="0" y="-70"/>
 		</transition>
 		<transition>
-			<source ref="id24"/>
-			<target ref="id27"/>
+			<source ref="id26"/>
+			<target ref="id29"/>
 			<label kind="guard" x="440" y="49">call_receiveShipment</label>
 			<label kind="synchronisation" x="440" y="7">chan_receiveShipment!</label>
 			<label kind="assignment" x="440" y="28">waitCLK=0,call_receiveShipment=false</label>
@@ -713,8 +719,8 @@ shipment_claim(_compensation_amount);
 			<nail x="0" y="-70"/>
 		</transition>
 		<transition>
-			<source ref="id24"/>
-			<target ref="id27"/>
+			<source ref="id26"/>
+			<target ref="id29"/>
 			<label kind="guard" x="440" y="49">no_transition()</label>
 			<label kind="assignment" x="440" y="28">waitCLK=0</label>
 			<nail x="600" y="70"/>
@@ -737,23 +743,23 @@ return shipment_inspect(_is_passed);
 }
 
 </declaration>
-		<location id="id28" x="400" y="0">
+		<location id="id30" x="400" y="0">
 			<name x="390" y="-30">sign_called</name>
 			<committed/>
 		</location>
-		<location id="id29" x="400" y="70">
+		<location id="id31" x="400" y="70">
 			<name x="390" y="40">withdraw_called</name>
 			<committed/>
 		</location>
-		<location id="id30" x="400" y="140">
+		<location id="id32" x="400" y="140">
 			<name x="390" y="110">inspect_called</name>
 			<committed/>
 		</location>
-		<location id="id31" x="0" y="0">
+		<location id="id33" x="0" y="0">
 			<name x="20" y="0">idle</name>
 			<label kind="invariant" x="20" y="10">waitCLK&lt;WAITMAX</label>
 		</location>
-		<init ref="id31"/>
+		<init ref="id33"/>
 	</template>
 	<template>
 		<name>ExportPortOperator</name>
@@ -769,23 +775,23 @@ shipment_exportShipment();
 }
 
 </declaration>
-		<location id="id32" x="400" y="0">
+		<location id="id34" x="400" y="0">
 			<name x="390" y="-30">sign_called</name>
 			<committed/>
 		</location>
-		<location id="id33" x="400" y="70">
+		<location id="id35" x="400" y="70">
 			<name x="390" y="40">withdraw_called</name>
 			<committed/>
 		</location>
-		<location id="id34" x="400" y="140">
+		<location id="id36" x="400" y="140">
 			<name x="390" y="110">exportShipment_called</name>
 			<committed/>
 		</location>
-		<location id="id35" x="0" y="0">
+		<location id="id37" x="0" y="0">
 			<name x="20" y="0">idle</name>
 			<label kind="invariant" x="20" y="10">waitCLK&lt;WAITMAX</label>
 		</location>
-		<init ref="id35"/>
+		<init ref="id37"/>
 	</template>
 	<template>
 		<name>ImportPortOperator</name>
@@ -801,23 +807,23 @@ shipment_importShipment();
 }
 
 </declaration>
-		<location id="id36" x="400" y="0">
+		<location id="id38" x="400" y="0">
 			<name x="390" y="-30">sign_called</name>
 			<committed/>
 		</location>
-		<location id="id37" x="400" y="70">
+		<location id="id39" x="400" y="70">
 			<name x="390" y="40">withdraw_called</name>
 			<committed/>
 		</location>
-		<location id="id38" x="400" y="140">
+		<location id="id40" x="400" y="140">
 			<name x="390" y="110">importShipment_called</name>
 			<committed/>
 		</location>
-		<location id="id39" x="0" y="0">
+		<location id="id41" x="0" y="0">
 			<name x="20" y="0">idle</name>
 			<label kind="invariant" x="20" y="10">waitCLK&lt;WAITMAX</label>
 		</location>
-		<init ref="id39"/>
+		<init ref="id41"/>
 	</template>
 	<system>// List one or more processes to be composed into a system.
 system Shipment, Shipper, Carrier, Consignee, PreShipmentInspector, ExportPortOperator, ImportPortOperator;

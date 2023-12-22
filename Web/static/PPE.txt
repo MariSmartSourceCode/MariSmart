@@ -1,0 +1,188 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+import "../../Templates/Stakeholders.sol";
+import "../../Templates/Shipment.sol";
+
+/* 
+The source code is fetched from https://github.com/MazenDB/TrackingPPE/blob/master/TrackingPPE.sol
+
+The contract mainly implements distribution system for PPE. The contract ordermagnaement implements the transportation of PPE.
+
+- Orderer is the consignee
+- receiver is the shipper
+
+- placeOrder is create and OrderManager.status.Pending is created
+- confirmOrder is sign and OrderManager.status.Accepted is signed
+- OrderManager.status.Rejected is closed
+- confirmReceived is receiveShipment and OrderManager.status.Received is received
+
+It is mentioned that a shipping fee is paid to the carrier in the original paper. However, we do not find the implementation of the payment, so that the payment related parameters are set to zero.
+*/
+
+contract FormattedShipment is Shipment {
+    address product_id;
+    address receiver;
+
+    function setProductId(address _product_id) public {
+        product_id = _product_id;
+    }
+
+    function getProductID() public view returns (address) {
+        return product_id;
+    }
+
+    function setReceiver(address _receiver) public {
+        receiver = _receiver;
+    }
+
+    function getReceiver() public view returns (address) {
+        return receiver;
+    }
+
+    function setQuantity(uint _quantity) public {
+        quantity = _quantity;
+    }
+
+    constructor() payable {
+        shipper = msg.sender;
+        price = 0;
+        down_payment = 0;
+        transportation_fee = 0;
+        escrow_thresholds[shipper] = 0;
+        escrow_thresholds[consignee] = 0;
+        escrow_thresholds[carrier] = 0;
+        signatures[msg.sender] = true;
+        balances[msg.sender] += msg.value;
+    }
+
+    function sign() external payable virtual override pre_sign {
+        signatures[msg.sender] = true;
+        balances[msg.sender] += msg.value;
+        emit StakeholderSign(msg.sender, block.timestamp);
+        if (
+            signatures[shipper] == true &&
+            signatures[carrier] == true &&
+            signatures[consignee] == true
+        ) {
+            state = State.signed;
+            emit ShipmentSigned(msg.sender, block.timestamp);
+        }
+    }
+
+    modifier pre_depart() override {
+        require(false, "deperated");
+        _;
+    }
+    modifier pre_arrive() override {
+        require(false, "deperated");
+        _;
+    }
+    modifier pre_receiveShipment() override {
+        require(state == State.signed);
+        _;
+    }
+    modifier pre_close() override {
+        require(
+            (state == State.signed && msg.sender == shipper) ||
+                state == State.received
+        );
+        _;
+    }
+}
+
+contract FormattedShipper is Shipper {
+    uint Availableinventory = 20;
+
+    /* custom variable here */
+
+    function sign(
+        address _shipment,
+        bool accepted
+    ) public virtual onlyOwner returns (uint) {
+        uint escrow_amount = FormattedShipment(_shipment).getEscrowThresholds(
+            address(this)
+        );
+        if (accepted) {
+            FormattedShipment(_shipment).sign{value: escrow_amount}();
+        } else {
+            FormattedShipment(_shipment).close();
+        }
+
+        FormattedShipment(_shipment).sign{value: escrow_amount}();
+        uid_counter += 1;
+        shipments[uid_counter] = _shipment;
+        return uid_counter;
+    }
+
+    function close(uint _UID) public virtual override onlyOwner {
+        /* custom logic here */
+        FormattedShipment(shipments[_UID]).close();
+    }
+
+    /* custom function here */
+}
+
+contract FormattedCarrier is Carrier {
+    event ShipmentNoticeCreated(
+        uint ShipmentNoticeID,
+        address sender,
+        address receiver1
+    );
+
+    function close(uint _UID) public virtual override onlyOwner {
+        /* custom logic here */
+        FormattedShipment(shipments[_UID]).close();
+    }
+
+    function sign(address _shipment) public override onlyOwner returns (uint) {
+        uint escrow_amount = FormattedShipment(_shipment).getEscrowThresholds(
+            address(this)
+        );
+        uid_counter += 1;
+        shipments[uid_counter] = _shipment;
+        FormattedShipment(_shipment).sign{value: escrow_amount}();
+        return uid_counter;
+    }
+}
+
+contract FormattedConsignee is Consignee {
+    event OrderPlaced(
+        uint orderID,
+        address receiver,
+        address orderer,
+        address productID,
+        uint quantity
+    );
+    event OrderReceived(uint orderID);
+
+    /* custom function here */
+    function create(
+        uint _escrow_amount,
+        address productID,
+        uint _quantity,
+        address _receiver
+    ) public onlyOwner returns (uint) {
+        FormattedShipment shipment = new FormattedShipment{
+            value: _escrow_amount
+        }();
+        /* custom logic here */
+        uid_counter += 1;
+        shipments[uid_counter] = address(shipment);
+        shipment.setProductId(productID);
+        shipment.setQuantity(_quantity);
+        shipment.setReceiver(_receiver);
+        emit OrderPlaced(
+            uid_counter,
+            _receiver,
+            msg.sender,
+            productID,
+            _quantity
+        );
+        return uid_counter;
+    }
+
+    function receiveShipment(uint _UID) public onlyOwner {
+        FormattedShipment(shipments[_UID]).receiveShipment(false);
+        emit OrderReceived(_UID);
+    }
+}

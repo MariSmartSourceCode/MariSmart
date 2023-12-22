@@ -1,0 +1,40 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+/* 
+This code is generated from MariSmart contract generator.
+*/
+
+
+
+/*****************************************************************************
+***************     customized contract start here     ***********************
+******************************************************************************/
+
+contract MyShipment is Shipment {
+MODIFIER
+}
+
+contract MyShipper is Shipper {
+shipper_function
+}
+
+contract MyCarrier is Carrier {
+carrier_function
+}
+
+contract MyConsignee is Consignee {
+consignee_function
+}
+
+contract MyPreshipmentInspector is PreshipmentInspector {
+pre_shipment_inspector_function
+}
+
+contract MyExportPortOperator is ExportPortOperator {
+export_port_operator_function
+}
+
+contract MyImportPortOperator is ImportPortOperator {
+import_port_operator_function
+}

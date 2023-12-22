@@ -1,0 +1,1 @@
+A[]  already_reportDamage imply is_damaged

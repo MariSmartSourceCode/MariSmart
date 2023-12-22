@@ -1,0 +1,8 @@
+    function create(
+        uint escrow_amount
+    ) public override onlyOwner returns (uint) {
+        IShipment shipment = new MyShipment{value: escrow_amount}();
+        uid_counter += 1;
+        shipments[uid_counter] = address(shipment);
+        return uid_counter;
+    }

@@ -1,0 +1,9 @@
+    function sign(address _shipment) public override onlyOwner returns (uint) {
+        uint escrow_amount = IShipment(_shipment).getEscrowThresholds(
+            address(this)
+        );
+        IShipment(_shipment).sign{value: escrow_amount}();
+        uid_counter += 1;
+        shipments[uid_counter] = _shipment;
+        return uid_counter;
+    }
