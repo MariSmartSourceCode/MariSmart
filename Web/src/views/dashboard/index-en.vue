@@ -2,15 +2,15 @@
     <div class="dashboard-container">
         <div class="back">
             <div class="content">
-                <div class="reminder">请选择或自定义待检测性质</div>
+                <div class="reminder">Choose or enter properties to verify</div>
                 <div class="pick">
-                    <div class="classes">工作流正确性性质</div>
+                    <div class="classes">Workflow correctness</div>
                     <el-checkbox
                         :indeterminate="isIndeterminate1"
                         v-model="ifCheckAll1"
                         @change="checkAll1"
                         class="checkAll"
-                        >全选</el-checkbox
+                        >All</el-checkbox
                     >
                     <el-checkbox-group v-model="checkList1" @change="checked1">
                         <el-row v-for="(item, index) in prop1" :key="index">
@@ -33,20 +33,22 @@
                         </el-row>
                     </el-checkbox-group>
                     <el-divider></el-divider>
-                    <div class="classes">支付正确性性质</div>
+                    <div class="classes">Payment correctness</div>
                     <el-checkbox
                         :indeterminate="isIndeterminate2"
                         v-model="ifCheckAll2"
                         @change="checkAll2"
                         class="checkAll"
-                        >全选</el-checkbox
+                        >All</el-checkbox
                     >
                     <el-checkbox-group v-model="checkList2" @change="checked2">
                         <el-row v-for="(item, index) in prop2" :key="index">
                             <el-col :span="22">
-                                <el-checkbox :label="item" class="checkbox">{{
-                                    item.desc
-                                }}</el-checkbox>
+                                <el-checkbox :label="item" class="checkbox">
+                                    <span class="requirement_label">{{
+                                        item.desc
+                                    }}</span>
+                                </el-checkbox>
                             </el-col>
                             <el-col :span="2">
                                 <el-tooltip
@@ -62,20 +64,22 @@
                         </el-row>
                     </el-checkbox-group>
                     <el-divider></el-divider>
-                    <div class="classes">异常处理正确性性质</div>
+                    <div class="classes">Accident compensation</div>
                     <el-checkbox
                         :indeterminate="isIndeterminate3"
                         v-model="ifCheckAll3"
                         @change="checkAll3"
                         class="checkAll"
-                        >全选</el-checkbox
+                        >All</el-checkbox
                     >
                     <el-checkbox-group v-model="checkList3" @change="checked3">
                         <el-row v-for="(item, index) in prop3" :key="index">
                             <el-col :span="22">
-                                <el-checkbox :label="item" class="checkbox">{{
-                                    item.desc
-                                }}</el-checkbox>
+                                <el-checkbox :label="item" class="checkbox">
+                                    <span class="requirement_label">{{
+                                        item.desc
+                                    }}</span>
+                                </el-checkbox>
                             </el-col>
                             <el-col :span="2">
                                 <el-tooltip
@@ -91,20 +95,22 @@
                         </el-row>
                     </el-checkbox-group>
                     <el-divider></el-divider>
-                    <div class="classes">合规性性质（汉堡规则）</div>
+                    <div class="classes">Legality (Hamburg Rules)</div>
                     <el-checkbox
                         :indeterminate="isIndeterminate4"
                         v-model="ifCheckAll4"
                         @change="checkAll4"
                         class="checkAll"
-                        >全选</el-checkbox
+                        >All</el-checkbox
                     >
                     <el-checkbox-group v-model="checkList4" @change="checked4">
                         <el-row v-for="(item, index) in prop4" :key="index">
                             <el-col :span="22">
-                                <el-checkbox :label="item" class="checkbox">{{
-                                    item.desc
-                                }}</el-checkbox>
+                                <el-checkbox :label="item" class="checkbox">
+                                    <span class="requirement_label">{{
+                                        item.desc
+                                    }}</span>
+                                </el-checkbox>
                             </el-col>
                             <el-col :span="2">
                                 <el-tooltip
@@ -120,20 +126,22 @@
                         </el-row>
                     </el-checkbox-group>
                     <el-divider></el-divider>
-                    <div class="classes">合规性性质（中国海商法）</div>
+                    <div class="classes">Legality (Maritime Laws of PRC.)</div>
                     <el-checkbox
                         :indeterminate="isIndeterminate5"
                         v-model="ifCheckAll5"
                         @change="checkAll5"
                         class="checkAll"
-                        >全选</el-checkbox
+                        >All</el-checkbox
                     >
                     <el-checkbox-group v-model="checkList5" @change="checked5">
                         <el-row v-for="(item, index) in prop5" :key="index">
                             <el-col :span="22">
-                                <el-checkbox :label="item" class="checkbox">{{
-                                    item.desc
-                                }}</el-checkbox>
+                                <el-checkbox :label="item" class="checkbox">
+                                    <span class="requirement_label">{{
+                                        item.desc
+                                    }}</span>
+                                </el-checkbox>
                             </el-col>
                             <el-col :span="2">
                                 <el-tooltip
@@ -151,7 +159,7 @@
                     <el-divider></el-divider>
                     <el-col :span="20">
                         <div class="classes">
-                            自定义性质
+                            Custom Properties
                         </div>
                     </el-col>
                     <el-col :span="4">
@@ -160,7 +168,7 @@
                             size="mini"
                             class="addpropbutton"
                             @click="addProp"
-                            >添加性质</el-button
+                            >add property</el-button
                         >
                     </el-col>
                     <el-table
@@ -169,23 +177,35 @@
                         height="220"
                         style="width: 100%"
                     >
-                        <el-table-column label="规范" prop="prop" width="300">
+                        <el-table-column
+                            label="formula"
+                            prop="prop"
+                            width="300"
+                        >
                             <template slot-scope="scope">
                                 <el-input
                                     v-model.trim="scope.row.prop"
-                                    placeholder="必填"
+                                    placeholder="necessary"
                                 ></el-input>
                             </template>
                         </el-table-column>
-                        <el-table-column label="描述" prop="desc" width="200">
+                        <el-table-column
+                            label="description"
+                            prop="desc"
+                            width="200"
+                        >
                             <template slot-scope="scope">
                                 <el-input
                                     v-model.trim="scope.row.desc"
-                                    placeholder="选填"
+                                    placeholder="optional"
                                 ></el-input>
                             </template>
                         </el-table-column>
-                        <el-table-column label="操作" width="80" align="center">
+                        <el-table-column
+                            label="delete"
+                            width="80"
+                            align="center"
+                        >
                             <template slot-scope="scope">
                                 <el-button
                                     type="text"
@@ -224,7 +244,7 @@
                     class="checkbutton2"
                     @click="goGenerate"
                 >
-                    前往生成合约<i class="el-icon-right"></i>
+                    Development View<i class="el-icon-right"></i>
                 </el-button>
                 <el-button
                     type="primary"
@@ -232,7 +252,7 @@
                     @click="checkNow"
                     v-loading.fullscreen.lock="loading"
                 >
-                    立即验证<i class="el-icon-right"></i>
+                    Verify<i class="el-icon-right"></i>
                 </el-button>
                 <prism-editor
                     class="my-editor"
@@ -270,55 +290,66 @@ export default {
         return {
             prop1: [
                 {
-                    desc: "其他活动开始前，订单已创建",
+                    desc:
+                        "Shipment is always created before any other activities.",
                     prop:
                         "A[] (!Shipper.idle || !Carrier.idle || !Consignee.idle || !PreShipmentInspector.idle || !ExportPortOperator.idle || !ImportPortOperator.idle ) imply already_create",
                     num: 1,
                 },
                 {
-                    desc: "其他活动开始前，参与方首先签订订单",
+                    desc:
+                        "Stakeholders always sign the shipment before taking any other activities.",
                     prop:
                         "A[] !Shipment.closed && (!Shipper.idle && !Shipper.create_called || !Carrier.idle && !Carrier.sign_called || !Consignee.idle && !Consignee.sign_called || !PreShipmentInspector.idle && !PreShipmentInspector.sign_called || !ExportPortOperator.idle && !ExportPortOperator.sign_called || !ImportPortOperator.idle && !ImportPortOperator.sign_called ) imply already_sign",
                     num: 2,
                 },
                 {
-                    desc: "货物出发前，出发地相关活动已完成",
+                    desc:
+                        "Activities on departure side take place before departing.",
                     prop:
                         "A[] (Shipper.create_called || Shipper.cancel_called || Shipper.close_called || Carrier.sign_called || Consignee.sign_called || PreShipmentInspector.sign_called || PreShipmentInspector.inspect_called || ExportPortOperator.sign_called || ExportPortOperator.exportShipment_called) imply !already_depart",
                     num: 3,
                 },
                 {
-                    desc: "出发后，货物或者送达，或者灭失",
+                    desc:
+                        "After departure, the shipment either arrives or is lost.",
                     prop:
                         "Shipment.departed --> Shipment.lost || Shipment.arrived",
                     num: 4,
                 },
                 {
-                    desc: "到达地相关活动开始前，货物已到达",
+                    desc:
+                        "Activities on destination side take place after arriving.",
                     prop:
                         "A[] (Carrier.rearrange_called || Consignee.receiveShipment_called || ImportPortOperator.importShipment_called) imply already_arrive",
                     num: 5,
                 },
-                { desc: "订单最终将结束", prop: "A<> Shipment.closed", num: 6 },
+                {
+                    desc: "Shipment will eventually close.",
+                    prop: "A<> Shipment.closed",
+                    num: 6,
+                },
             ],
             prop2: [
                 {
-                    desc: "参与方余额始终非负",
+                    desc: "Stakeholders' balances are always non-negative.",
                     prop: "A[] (sum(i:int[1,6])balances[i]) >=0",
                     num: 7,
                 },
                 {
-                    desc: "所有参与方净收入之和始终为0",
+                    desc: "Sum of stakeholders' net proceeds is always zero.",
                     prop: "A[] (sum(i:int[0,6])net[i]) ==0",
                     num: 8,
                 },
                 {
-                    desc: "参与方余额之和始终等于订单合约净收入",
+                    desc:
+                        "Sum of stakeholders' balances is always equal to Ethers in shipment contract.",
                     prop: "A[] (sum(i:int[1,6])balances[i]) == net[0]",
                     num: 9,
                 },
                 {
-                    desc: "订单结束后，参与方余额最终将被取出",
+                    desc:
+                        "After closing the shipment, balances will eventually be withdrawn.",
                     prop:
                         "Shipment.closed --> (forall(i:int[1,6])balances[i]==0)",
                     num: 10,
@@ -326,39 +357,39 @@ export default {
             ],
             prop3: [
                 {
-                    desc: "合约正确地记录了延迟送达",
+                    desc: "Delayed arrival is recorded correctly.",
                     prop:
                         "A[] (is_delayed imply block_timestamp > arrive_date) && (block_timestamp > arrive_date && arrive_timeCLK==0 imply is_delayed)",
                     num: 11,
                 },
                 {
                     desc:
-                        "延迟送达后，或者参与方要求赔偿，或者超过申请时限后订单关闭",
+                        "Delayed arrival leads to either claiming for compensation or closing shipment after compensate period",
                     prop:
                         "is_delayed --> Shipment.claimed || Shipment.closed && arrive_timeCLK>compensation_valid",
                     num: 12,
                 },
                 {
-                    desc: "合约正确地记录了货物灭失",
+                    desc: "Loss of shipment is recorded correctly.",
                     prop:
                         "A[] (is_lost imply already_reportLoss) && (already_reportLoss imply is_lost)",
                     num: 13,
                 },
                 {
                     desc:
-                        "货物灭失后，或者参与方要求赔偿，或者超过申请时限后订单关闭",
+                        "Shipment loss leads to either claiming for compensation or closing shipment after compensate period",
                     prop:
                         "is_lost --> Shipment.claimed || Shipment.closed && block_timestamp>arrive_date+compensation_valid",
                     num: 14,
                 },
                 {
-                    desc: "合约正确地记录了货物损坏",
+                    desc: "Damage of shipment is recorded correctly.",
                     prop: "A[]  already_reportDamage imply is_damaged",
                     num: 15,
                 },
                 {
                     desc:
-                        "货物损坏后，或者参与方要求赔偿，或者超过申请时限后订单关闭",
+                        "Shipment damage leads to either claiming for compensation or closing shipment after compensate period",
                     prop:
                         "is_damaged --> Shipment.claimed || Shipment.closed && arrive_timeCLK>compensation_valid",
                     num: 16,
@@ -367,33 +398,35 @@ export default {
             prop4: [
                 {
                     desc:
-                        "赔偿限额始终小于 835 SDR 或 2.5 SDR/kg，取其中较小者",
+                        "Compensation limit is always less than 835 SDR or 2.5 SDR/kg, whichever is the higher.",
                     prop:
-                        "A[] compensation_limit <835 and compensation_limit <2.5*weight",
+                        "A[] compensation_limit <835 or compensation_limit <2.5*weight",
                     num: 17,
                 },
                 {
-                    desc: "实际支付赔偿额小于运费的 2.5 倍",
+                    desc:
+                        "Compensation actually paid for delay should be less than 2.5 times of transportation fee.",
                     prop:
                         "A[] is_delayed && !is_damaged && !is_lost imply net[carrier]+balances[carrier]>=transportation_fee*(1-2.5)",
                     num: 18,
                 },
                 {
                     desc:
-                        "实际支付赔偿额小于 835 SDR 或 2.5 SDR/kg，取其中较小者",
+                        "Compensation actually paid for loss or damage should be less than 835 SDR or 2.5 SDR/kg, whichever is the higher.",
                     prop:
-                        "A[] (is_damaged || is_lost) imply (net[carrier]+balances[carrier]>= transportation_fee-835 && net[carrier]+balances[carrier]>= transportation_fee-weight*2.5)",
+                        "A[] (is_damaged || is_lost) imply (net[carrier]+balances[carrier]>= transportation_fee-835 or net[carrier]+balances[carrier]>= transportation_fee-weight*2.5)",
                     num: 19,
                 },
                 {
-                    desc: "收货方应在收到货物后 90 天内申请赔偿",
+                    desc:
+                        "Consignee should claim for compensation within 90 days after arrival.",
                     prop:
                         "A[] Consignee.claim_called imply receive_timeCLK<=90",
                     num: 20,
                 },
                 {
                     desc:
-                        "收货方应在货物到达后 90 天内接受货物，否则承运人有权拍卖或转卖货物",
+                        "Consignee should receive shipment within 90 days after arrival, otherwise carrier can resell or auction it.",
                     prop:
                         "A[] Carrier.rearrange_called imply arrive_timeCLK>90",
                     num: 21,
@@ -402,39 +435,41 @@ export default {
             prop5: [
                 {
                     desc:
-                        "赔偿限额始终小于 666.67 SDR 或 2 SDR/kg，取其中较小者",
+                        "Compensation limit is always less than 666.67 SDR or 2 SDR/kg, whichever is the higher.",
                     prop:
-                        "A[] compensation_limit<666.67 and compensation_limit<2*weight",
+                        "A[] compensation_limit<666.67 or compensation_limit<2*weight",
                     num: 22,
                 },
                 {
-                    desc: "实际支付赔偿额小于运费",
+                    desc:
+                        "Compensation actually paid for delay should be less than transportation fee.",
                     prop:
                         "A[] is_delayed && !is_damaged && !is_lost imply net[carrier]+balances[carrier]>=transportation_fee*(1-1)",
                     num: 23,
                 },
                 {
                     desc:
-                        "实际支付赔偿额小于 666.67 SDR 或 2 SDR/kg，取其中较小者",
+                        "Compensation actually paid for loss or damage should be less than 666.67 SDR or 2 SDR/kg, whichever is the higher.",
                     prop:
-                        "A[] (is_damaged || is_lost) imply (net[carrier]+balances[carrier]>= transportation_fee-666.67 && net[carrier]+balances[carrier]>= transportation_fee-weight*2)",
+                        "A[] (is_damaged || is_lost) imply (net[carrier]+balances[carrier]>= transportation_fee-666.67 or net[carrier]+balances[carrier]>= transportation_fee-weight*2)",
                     num: 24,
                 },
                 {
-                    desc: "收货方应在收到货物后 7 天内申请赔偿",
+                    desc:
+                        "Consignee should claim for compensation within 7 days after arrival.",
                     prop: "A[] Consignee.claim_called imply receive_timeCLK<=7",
                     num: 25,
                 },
                 {
                     desc:
-                        "收货方应在货物到达后 60 天内接受货物，否则承运人有权拍卖或转卖货物",
+                        "Consignee should receive shipment within 60 days after arrival.",
                     prop:
                         "A[] Carrier.rearrange_called imply arrive_timeCLK>60",
                     num: 26,
                 },
             ],
             files: [
-                "输入自定义合约",
+                "Custom Contract",
                 "IoT",
                 "LNG",
                 "Medical",
@@ -446,7 +481,7 @@ export default {
                 "eth-shipment",
             ],
 
-            filename: "请选择示例合约",
+            filename: "Choose Demo",
             code: "",
             checkList1: [],
             checkList2: [],
@@ -534,7 +569,7 @@ export default {
                 checkedCount > 0 && checkedCount < this.prop5.length;
         },
         readFile(name) {
-            if (name == "输入自定义合约") {
+            if (name == "Custom Contract") {
                 return "";
             }
             let xhr = new XMLHttpRequest();
@@ -544,7 +579,7 @@ export default {
             return xhr.responseText;
         },
         pickFile(filename) {
-            if (filename == "输入自定义合约") {
+            if (filename == "Custom Contract") {
                 this.readonly = false;
             } else {
                 this.readonly = true;
@@ -553,19 +588,19 @@ export default {
             this.code = this.readFile(this.filename);
         },
         goGenerate() {
-            this.$router.push("/generate");
+            this.$router.push("/generate-en");
         },
         checkNow() {
             // check if code is empty
             if (
-                this.filename == "输入自定义合约" ||
-                this.filename == "请选择示例合约"
+                this.filename == "Custom Contract" ||
+                this.filename == "Choose Demo"
             ) {
-                this.$message.error("目前仅支持验证示例合约！");
+                this.$message.error("Only demos can be verified for now!");
                 return;
             }
             if (this.code == "") {
-                this.$message.error("合约代码不可为空！");
+                this.$message.error("Empty contract codes!");
                 return;
             }
             // check if diyList.prop is empty
@@ -578,7 +613,7 @@ export default {
                     }
                 }
                 if (flag == true) {
-                    this.$message.error("添加的自定义性质不可为空！");
+                    this.$message.error("Empty custom properties!!");
                     return;
                 }
             }
@@ -590,7 +625,7 @@ export default {
                     this.checkList3.length ==
                 0
             ) {
-                this.$message.error("请选择待检测性质");
+                this.$message.error("No requirement selected!");
                 return;
             }
             this.loading = true;
@@ -622,7 +657,7 @@ export default {
             };
 
             this.$router.push({
-                name: "result",
+                name: "result-en",
                 params: {
                     filename: this.filename,
                     checkList1: this.checkList1,
@@ -687,11 +722,12 @@ export default {
 }
 .el-checkbox__label {
     display: inline-grid;
-    white-space: pre-line;
+    white-space: normal;
     margin-right: 30px;
     word-wrap: break-word;
-    width: 400px;
+    width: 10px;
 }
+
 .el-checkbox {
     color: #333333 !important;
 }
@@ -708,8 +744,17 @@ export default {
     background-color: white;
 }
 .checkbox {
-    font-size: 20px;
+    font-size: 0px;
     left: 40px;
+}
+.requirement_label {
+    font-size: 14px;
+    white-space: pre-line;
+    overflow: hidden;
+    word-wrap: break-word;
+    width: 450px;
+    display: inline-grid;
+    overflow: hidden;
 }
 .reminder {
     font-size: 20px;
@@ -744,7 +789,7 @@ export default {
 }
 .checkbutton2 {
     font-size: 20px;
-    left: 880px;
+    left: 840px;
     position: absolute;
     font-weight: bold;
     top: 15px;
@@ -752,7 +797,7 @@ export default {
 .addpropbutton {
     font-size: 14px;
     font-weight: bold;
-    max-width: 63px;
+    max-width: 100px;
     max-height: 23px;
     display: flex;
     justify-content: center;

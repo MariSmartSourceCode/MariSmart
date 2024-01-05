@@ -2,7 +2,7 @@
     <div class="dashboard-container">
         <div class="back">
             <div class="content">
-                <div class="reminder">航运活动及流程</div>
+                <div class="reminder">Activities</div>
                 <div
                     class="pick"
                     v-for="(fitem, findex) in activity"
@@ -15,7 +15,7 @@
                         @change="setactivity($event, fitem)"
                         >{{ fitem.desc }}</el-checkbox
                     >
-                    <div class="reminder3">由以下参与方触发：</div>
+                    <div class="reminder3">Triggered by:</div>
                     <el-checkbox-group
                         v-model="fitem.actor"
                         @change="setactor($event, findex)"
@@ -25,7 +25,7 @@
                             v-model="fitem.actor"
                             @change="setactorAll($event, findex)"
                             class="checkOperator"
-                            >全选</el-checkbox-button
+                            >All</el-checkbox-button
                         >
                         <el-checkbox-button
                             class="checkOperator"
@@ -36,7 +36,7 @@
                         >
                     </el-checkbox-group>
 
-                    <div class="reminder3">处于以下状态时触发：(前置状态)</div>
+                    <div class="reminder3">Triggered after: (pre-state)</div>
 
                     <el-checkbox-group
                         v-model="fitem.pre_state"
@@ -52,7 +52,7 @@
                         >
                     </el-checkbox-group>
 
-                    <div class="reminder3">活动函数：</div>
+                    <div class="reminder3">Function:</div>
 
                     <prism-editor
                         class="function-editor"
@@ -63,7 +63,7 @@
                     >
                     </prism-editor>
                 </div>
-                <div class="reminder2">MariSmart 合约</div>
+                <div class="reminder2">MariSmart Application</div>
 
                 <el-button
                     type="primary"
@@ -71,7 +71,7 @@
                     @click="update"
                     v-loading.fullscreen.lock="loading"
                 >
-                    生成合约 <i class="el-icon-refresh-right"></i>
+                    Generate <i class="el-icon-refresh-right"></i>
                 </el-button>
                 <el-button
                     type="primary"
@@ -79,7 +79,7 @@
                     @click="goVerify"
                     v-loading.fullscreen.lock="loading"
                 >
-                    前往验证 <i class="el-icon-right"></i>
+                    Verification View <i class="el-icon-right"></i>
                 </el-button>
                 <prism-editor
                     class="my-editor"
@@ -113,32 +113,32 @@ export default {
         return {
             actor: [
                 {
-                    desc: "托运人",
+                    desc: "Shipper",
                     num: 1,
                     name: "shipper",
                 },
                 {
-                    desc: "承运人",
+                    desc: "Carrier",
                     num: 2,
                     name: "carrier",
                 },
                 {
-                    desc: "收货人",
+                    desc: "Consignee",
                     num: 3,
                     name: "consignee",
                 },
                 {
-                    desc: "运输前检查员",
+                    desc: "Inspector",
                     num: 4,
                     name: "pre_shipment_inspector",
                 },
                 {
-                    desc: "出口港口操作员",
+                    desc: "Export Port",
                     num: 5,
                     name: "export_port_operator",
                 },
                 {
-                    desc: "进口港口操作员",
+                    desc: "Import Port",
                     num: 6,
                     name: "import_port_operator",
                 },
@@ -146,7 +146,7 @@ export default {
             ifActivity: [],
             activity: [
                 {
-                    desc: "创建定单",
+                    desc: "Create",
                     num: 1,
                     actor: [],
                     pre_state: [],
@@ -154,7 +154,7 @@ export default {
                     name: "create",
                 },
                 {
-                    desc: "签署定单",
+                    desc: "Sign",
                     num: 2,
                     actor: [],
                     pre_state: [],
@@ -162,7 +162,7 @@ export default {
                     name: "sign",
                 },
                 {
-                    desc: "运输前检查",
+                    desc: "Inspect",
                     num: 3,
                     actor: [],
                     pre_state: [],
@@ -170,7 +170,7 @@ export default {
                     name: "inspect",
                 },
                 {
-                    desc: "出口",
+                    desc: "Export",
                     num: 4,
                     actor: [],
                     pre_state: [],
@@ -178,7 +178,7 @@ export default {
                     name: "exportShipment",
                 },
                 {
-                    desc: "取消定单",
+                    desc: "Cancel",
                     num: 5,
                     actor: [],
                     pre_state: [],
@@ -186,7 +186,7 @@ export default {
                     name: "cancel",
                 },
                 {
-                    desc: "出发",
+                    desc: "Depart",
                     num: 6,
                     actor: [],
                     pre_state: [],
@@ -194,7 +194,7 @@ export default {
                     name: "depart",
                 },
                 {
-                    desc: "报告灭失",
+                    desc: "Report Loss",
                     num: 7,
                     actor: [],
                     pre_state: [],
@@ -202,7 +202,7 @@ export default {
                     name: "reportLoss",
                 },
                 {
-                    desc: "报告损坏",
+                    desc: "Report Damage",
                     num: 8,
                     actor: [],
                     pre_state: [],
@@ -210,7 +210,7 @@ export default {
                     name: "reportDamage",
                 },
                 {
-                    desc: "到达",
+                    desc: "Arrive",
                     num: 9,
                     actor: [],
                     pre_state: [],
@@ -218,7 +218,7 @@ export default {
                     name: "arrive",
                 },
                 {
-                    desc: "进口",
+                    desc: "Import",
                     num: 10,
                     actor: [],
                     pre_state: [],
@@ -226,7 +226,7 @@ export default {
                     name: "importShipment",
                 },
                 {
-                    desc: "滞留处置",
+                    desc: "Rearrange",
                     num: 11,
                     actor: [],
                     pre_state: [],
@@ -234,7 +234,7 @@ export default {
                     name: "rearrange",
                 },
                 {
-                    desc: "收货",
+                    desc: "Receive",
                     num: 12,
                     actor: [],
                     pre_state: [],
@@ -242,7 +242,7 @@ export default {
                     name: "receiveShipment",
                 },
                 {
-                    desc: "申请赔偿",
+                    desc: "Claim for Compensation",
                     num: 13,
                     actor: [],
                     pre_state: [],
@@ -250,7 +250,7 @@ export default {
                     name: "claim",
                 },
                 {
-                    desc: "支付赔偿",
+                    desc: "Pay for Compensation",
                     num: 14,
                     actor: [],
                     pre_state: [],
@@ -258,7 +258,7 @@ export default {
                     name: "compensate",
                 },
                 {
-                    desc: "结束定单",
+                    desc: "Close",
                     num: 15,
                     actor: [],
                     pre_state: [],
@@ -268,62 +268,62 @@ export default {
             ],
             pre_state: [
                 {
-                    desc: "已创建",
+                    desc: "created",
                     num: 1,
                     name: "created",
                 },
                 {
-                    desc: "已签署",
+                    desc: "signed",
                     num: 2,
                     name: "signed",
                 },
                 {
-                    desc: "已检查",
+                    desc: "inspected",
                     num: 3,
                     name: "inspected",
                 },
                 {
-                    desc: "已出口",
+                    desc: "exported",
                     num: 4,
                     name: "exported",
                 },
                 {
-                    desc: "已出发",
+                    desc: "departed",
                     num: 5,
                     name: "departed",
                 },
                 {
-                    desc: "已灭失",
+                    desc: "lost",
                     num: 6,
                     name: "lost",
                 },
                 {
-                    desc: "已到达",
+                    desc: "arrived",
                     num: 7,
                     name: "arrived",
                 },
                 {
-                    desc: "已进口",
+                    desc: "imported",
                     num: 8,
                     name: "imported",
                 },
                 {
-                    desc: "已滞留处置",
+                    desc: "rearranged",
                     num: 9,
                     name: "rearranged",
                 },
                 {
-                    desc: "已收货",
+                    desc: "received",
                     num: 10,
                     name: "received",
                 },
                 {
-                    desc: "已索赔",
+                    desc: "claimed",
                     num: 11,
                     name: "claimed",
                 },
                 {
-                    desc: "已结束",
+                    desc: "closed",
                     num: 12,
                     name: "closed",
                 },
@@ -362,7 +362,7 @@ export default {
         },
         goVerify() {
             this.$router.push({
-                name: "dashboard",
+                name: "dashboard-en",
                 params: { code: this.code },
             });
         },
@@ -375,7 +375,7 @@ export default {
                 }
             }
             if (!flag) {
-                this.$message.error("请至少选择一个活动");
+                this.$message.error("Please select at least one activity!");
                 return;
             }
             for (let i = 0; i < this.activity.length; i++) {
@@ -384,7 +384,7 @@ export default {
                     this.ifActivity[this.activity[i].num]
                 ) {
                     this.$message.error(
-                        `请为${this.activity[i].desc}活动至少选择一个参与方`
+                        `Please assign at least one stakeholder for ${this.activity[i].desc}!`
                     );
                     return;
                 }
@@ -394,7 +394,7 @@ export default {
                     this.activity[i].num != 1
                 ) {
                     this.$message.error(
-                        `请为${this.activity[i].desc}活动选择至少一个前置状态`
+                        `Please assign at least one pre-state for ${this.activity[i].desc}!`
                     );
                     return;
                 }
@@ -570,14 +570,14 @@ export default {
 }
 .checkbutton1 {
     font-size: 20px;
-    right: 225px;
+    right: 255px;
     position: absolute;
     font-weight: bold;
     top: 15px;
 }
 .checkbutton2 {
     font-size: 20px;
-    right: 25px;
+    right: 20px;
     position: absolute;
     font-weight: bold;
     top: 15px;

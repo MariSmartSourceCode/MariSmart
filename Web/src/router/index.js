@@ -26,6 +26,23 @@ export const constantRouterMap = [
       {path: '/generate', component: _import('generate/index'), hidden: true}
     ]
   },
+  {
+    path: '/en',
+    component: Layout,
+    redirect: '/dashboard-en',
+    name: 'dashboard-en',
+    hidden: true,
+    children: [
+      {path: '/dashboard-en', component: _import('dashboard/index-en')},
+      {
+        path: '/result-en', 
+        component: _import('result/index-en'), 
+        name: 'result-en',
+        hidden: true
+      },
+      {path: '/generate-en', name:'generate-en',component: _import('generate/index-en'), hidden: true}
+    ]
+  },
 ]
 export default new Router({
   // mode: 'history', //后端支持可开
