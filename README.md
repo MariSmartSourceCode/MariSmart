@@ -10,7 +10,11 @@ X. Zhao, Q. Wei, X.-Y. Zhu, and W. Zhang, “A smart contract development framew
 
 ## Cases
 
-We refactor 9 real-world cases into MariSmart contracts, which are under /MariSmart_Verifier/Cases, with a src.sol for original smart contracts, a standard.sol for refactored ones, and a UPPAAL model as the xml file.
+We refactor 9 real-world cases into MariSmart contracts, which are under /Cases, with a src.sol for original smart contracts, a standard.sol for the refactored verision, and a xml file for the UPPAAL model.
+
+## Requirements
+
+We extract 26 domain-specific requirements and model them as TCTL formulas, which are under /MariSmart_Verifier/properties.
 
 ## Verification
 
@@ -20,7 +24,7 @@ We implemented a automated verifier for MariSmart contracts, the usage of such t
 
 > 1. download UPPAAL at https://uppaal.org/downloads/
 >
-> 2. move verifyta, libgcc_s.1.dylib and libstdc++.6.dylib to /Verification/Verifier/UPPAAL
+> 2. move verifyta to /MariSmart_Verifier/UPPAAL
 
 2. prepare for requirements. `pip3 install -r requirements.txt`
 
