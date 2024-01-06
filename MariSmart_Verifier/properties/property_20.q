@@ -1,1 +1,1 @@
-A[] Consignee.claim_called imply receive_timeCLK<=60
+A[] Consignee.claim_called imply receive_timeCLK<=15
