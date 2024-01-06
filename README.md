@@ -4,13 +4,13 @@ a development and verification framework for maritime transportation smart contr
 
 ## Development
 
-The MariSmart templates is under /Templates, the architecture of these smart templates can be seen in the paper.
+The MariSmart templates is under /MariSmart_Templates, the architecture of these smart templates can be seen in the paper in /MariSmart_Template/workshop.pdf.
 
 X. Zhao, Q. Wei, X.-Y. Zhu, and W. Zhang, “A smart contract development framework for maritime transportation systems,” in Proc. Of The IEEE International Workshop on Blockchain and Smart Contracts (IEEE BSC 2023). IEEE, 2023.
 
 ## Cases
 
-We refactor 9 real-world cases into MariSmart contracts, which are under /Cases, with a src.sol for original smart contracts, a standard.sol for refactored ones, and a UPPAAL model as the xml file.
+We refactor 9 real-world cases into MariSmart contracts, which are under /MariSmart_Verifier/Cases, with a src.sol for original smart contracts, a standard.sol for refactored ones, and a UPPAAL model as the xml file.
 
 ## Verification
 

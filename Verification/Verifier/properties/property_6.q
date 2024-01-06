@@ -1,1 +1,0 @@
-A<> Shipment.closed
