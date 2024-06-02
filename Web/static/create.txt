@@ -1,7 +1,7 @@
     function create(
-        uint escrow_amount
+        uint _escrow_amount
     ) public override onlyOwner returns (uint) {
-        FormattedShipment shipment = new FormattedShipment{value: escrow_amount}();
+        FormattedShipment shipment = new FormattedShipment{value: _escrow_amount}();
         uid_counter += 1;
         shipments[uid_counter] = address(shipment);
         return uid_counter;
