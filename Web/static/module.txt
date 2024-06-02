@@ -11,7 +11,7 @@ This code is generated from MariSmart contract generator.
 ***************     customized contract start here     ***********************
 ******************************************************************************/
 
-contract MyShipment is Shipment {
+contract FormattedShipment is Shipment {
 MODIFIER
 }
 

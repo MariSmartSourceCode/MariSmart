@@ -1,4 +1,4 @@
     function reportDamage(uint _UID) public override onlyOwner {
         /* custom logic here */
-        MyShipment(shipments[_UID]).reportDamage();
+        FormattedShipment(shipments[_UID]).reportDamage();
     }

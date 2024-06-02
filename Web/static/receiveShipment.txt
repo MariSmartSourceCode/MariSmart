@@ -3,5 +3,5 @@
         bool _is_passed
     ) public override onlyOwner {
         /* custom logic here */
-        MyShipment(shipments[_UID]).receiveShipment(_is_passed);
+        FormattedShipment(shipments[_UID]).receiveShipment(_is_passed);
     }

@@ -1,4 +1,4 @@
     function exportShipment(uint _UID) public override onlyOwner {
         /* custom logic here */
-        MyShipment(shipments[_UID]).exportShipment();
+        FormattedShipment(shipments[_UID]).exportShipment();
     }

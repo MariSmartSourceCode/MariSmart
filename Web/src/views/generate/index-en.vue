@@ -430,7 +430,7 @@ export default {
                 );
                 pre_state_stmt = `\t\trequire(${pre_state_stmt});\n`;
 
-                modifier += `\tmodifier pre_${this.activity[i].name} override () {\n${actor_stmt}${pre_state_stmt}\t\t_;\n\t}\n\n`;
+                modifier += `\tmodifier pre_${this.activity[i].name}() override {\n${actor_stmt}${pre_state_stmt}\t\t_;\n\t}\n\n`;
 
                 for (let j = 0; j < this.activity[i].actor.length; j++) {
                     if (this.activity[i].actor[j]) {
